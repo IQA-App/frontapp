@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { submitOrder } from './utils/client'
 
 interface FormData {
   name: string
@@ -10,27 +11,28 @@ interface FormData {
 }
 
 const formData = reactive<FormData>({
-  name: '',
-  email: '',
-  phone: '',
-  serviceType: '',
+  title: '',
   description: ''
 })
 
 const submitted = ref(false)
 
-const handleSubmit = () => {
-  console.log('Form submitted:', formData)
-  submitted.value = true
+const handleSubmit = async () => {
+  try {
+    await submitOrder(formData)
+    console.log('Form submitted:', formData)
+    submitted.value = true
 
-  setTimeout(() => {
-    submitted.value = false
-    formData.name = ''
-    formData.email = ''
-    formData.phone = ''
-    formData.serviceType = ''
-    formData.description = ''
-  }, 3000)
+    setTimeout(() => {
+      submitted.value = false,
+      formData.title = '',
+      formData.description = ''
+    }, 3000)
+  } catch (error) {
+    // Error handling is already logged in the utility, 
+    // but you might want to show a user-facing error message here
+    alert('Failed to submit order. Please try again.')
+  }
 }
 </script>
 
@@ -174,71 +176,12 @@ const handleSubmit = () => {
                 </label>
                 <input
                   id="name"
-                  v-model="formData.name"
+                  v-model="formData.title"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="Title"
                   required
                   class="flex h-12 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-base shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300"
                 >
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label
-                    for="email"
-                    class="text-sm font-semibold leading-none text-slate-700"
-                  >
-                    Email Address *
-                  </label>
-                  <input
-                    id="email"
-                    v-model="formData.email"
-                    type="email"
-                    placeholder="john@example.com"
-                    required
-                    class="flex h-12 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-base shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300"
-                  >
-                </div>
-
-                <div class="space-y-2">
-                  <label
-                    for="phone"
-                    class="text-sm font-semibold leading-none text-slate-700"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    id="phone"
-                    v-model="formData.phone"
-                    type="tel"
-                    placeholder="+1 (555) 000-0000"
-                    class="flex h-12 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-base shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300"
-                  >
-                </div>
-              </div>
-
-              <div class="space-y-2">
-                <label
-                  for="serviceType"
-                  class="text-sm font-semibold leading-none text-slate-700"
-                >
-                  Service Type *
-                </label>
-                <select
-                  id="serviceType"
-                  v-model="formData.serviceType"
-                  required
-                  class="flex h-12 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-base shadow-sm transition-all duration-200 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300"
-                >
-                  <option value="" disabled>Select a service</option>
-                  <option value="consulting">Consulting</option>
-                  <option value="design">Design & Creative</option>
-                  <option value="development">Development</option>
-                  <option value="maintenance">Maintenance & Support</option>
-                  <option value="installation">Installation</option>
-                  <option value="repair">Repair Services</option>
-                  <option value="other">Other</option>
-                </select>
               </div>
 
               <div class="space-y-2">
