@@ -3,10 +3,7 @@ import { ref, reactive } from 'vue'
 import { submitOrder } from './utils/client'
 
 interface FormData {
-  name: string
-  email: string
-  phone: string
-  serviceType: string
+  title: string,
   description: string
 }
 
