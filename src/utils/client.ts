@@ -1,5 +1,5 @@
 interface OrderData {
-  name: string,
+  title: string,
   description: string
 }
 
