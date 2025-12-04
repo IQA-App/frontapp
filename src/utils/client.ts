@@ -1,8 +1,5 @@
 interface OrderData {
-  name: string
-  email: string
-  phone: string
-  serviceType: string
+  name: string,
   description: string
 }
 
