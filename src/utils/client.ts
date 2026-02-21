@@ -1,12 +1,16 @@
-interface OrderData {
-  title: string,
-  description: string
+/** Matches backend CreateOrderDto (customerName, email, confirmEmail, customFields). */
+export interface OrderData {
+  customerName: string
+  email: string
+  confirmEmail: string
+  customFields: Record<string, unknown>
 }
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'https://dev0pz.com/api'
 
 export const submitOrder = async (data: OrderData): Promise<void> => {
   try {
-    // Replace with your actual API endpoint
-    const response = await fetch('https://dev0pz.com/api/orders', {
+    const response = await fetch(`${API_BASE}/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

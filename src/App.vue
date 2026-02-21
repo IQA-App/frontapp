@@ -3,31 +3,39 @@ import { ref, reactive } from 'vue'
 import { submitOrder } from './utils/client'
 
 interface FormData {
-  title: string,
+  customerName: string
+  email: string
+  confirmEmail: string
   description: string
 }
 
 const formData = reactive<FormData>({
-  title: '',
+  customerName: '',
+  email: '',
+  confirmEmail: '',
   description: ''
 })
 
 const submitted = ref(false)
+const errorMessage = ref('')
 
 const handleSubmit = async () => {
+  errorMessage.value = ''
   try {
-    await submitOrder(formData)
-    console.log('Form submitted:', formData)
+    await submitOrder({
+      customerName: formData.customerName,
+      email: formData.email,
+      confirmEmail: formData.confirmEmail,
+      customFields: { description: formData.description }
+    })
     submitted.value = true
-
-    setTimeout(() => {
-      submitted.value = false,
-      formData.title = '',
-      formData.description = ''
-    }, 3000)
-  } catch (error) {
-    // Error handling is already logged in the utility, 
-    // but you might want to show a user-facing error message here
+    formData.customerName = ''
+    formData.email = ''
+    formData.confirmEmail = ''
+    formData.description = ''
+    setTimeout(() => { submitted.value = false }, 3000)
+  } catch (err) {
+    errorMessage.value = 'Failed to submit. Check email match and try again.'
     alert('Failed to submit order. Please try again.')
   }
 }
@@ -164,28 +172,54 @@ const handleSubmit = async () => {
 
             <!-- Form -->
             <form v-else @submit.prevent="handleSubmit" class="space-y-6">
+              <p v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</p>
+
               <div class="space-y-2">
-                <label
-                  for="name"
-                  class="text-sm font-semibold leading-none text-slate-700"
-                >
+                <label for="customerName" class="text-sm font-semibold leading-none text-slate-700">
                   Full Name *
                 </label>
                 <input
-                  id="name"
-                  v-model="formData.title"
+                  id="customerName"
+                  v-model="formData.customerName"
                   type="text"
-                  placeholder="Title"
+                  placeholder="e.g. John Smith or Acme LLC"
+                  required
+                  minlength="5"
+                  maxlength="100"
+                  class="flex h-12 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-base shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300"
+                >
+              </div>
+
+              <div class="space-y-2">
+                <label for="email" class="text-sm font-semibold leading-none text-slate-700">
+                  Email *
+                </label>
+                <input
+                  id="email"
+                  v-model="formData.email"
+                  type="email"
+                  placeholder="you@example.com"
                   required
                   class="flex h-12 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-base shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300"
                 >
               </div>
 
               <div class="space-y-2">
-                <label
-                  for="description"
-                  class="text-sm font-semibold leading-none text-slate-700"
+                <label for="confirmEmail" class="text-sm font-semibold leading-none text-slate-700">
+                  Confirm Email *
+                </label>
+                <input
+                  id="confirmEmail"
+                  v-model="formData.confirmEmail"
+                  type="email"
+                  placeholder="Re-enter your email"
+                  required
+                  class="flex h-12 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-base shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300"
                 >
+              </div>
+
+              <div class="space-y-2">
+                <label for="description" class="text-sm font-semibold leading-none text-slate-700">
                   Project Description *
                 </label>
                 <textarea
