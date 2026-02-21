@@ -1,8 +1,7 @@
-/** Matches backend CreateOrderDto. Only customerName is required. */
+/** Matches backend CreateOrderDto. API requires only customerName; email and customFields are optional. */
 export interface OrderData {
   customerName: string
   email?: string
-  confirmEmail?: string
   customFields?: Record<string, unknown>
 }
 

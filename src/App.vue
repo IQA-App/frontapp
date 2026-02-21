@@ -5,14 +5,12 @@ import { submitOrder } from './utils/client'
 interface FormData {
   customerName: string
   email: string
-  confirmEmail: string
   description: string
 }
 
 const formData = reactive<FormData>({
   customerName: '',
   email: '',
-  confirmEmail: '',
   description: ''
 })
 
@@ -24,13 +22,12 @@ const handleSubmit = async () => {
   try {
     await submitOrder({
       customerName: formData.customerName.trim(),
-      ...(formData.email && formData.confirmEmail && { email: formData.email, confirmEmail: formData.confirmEmail }),
-      ...(formData.description.trim() && { customFields: { description: formData.description.trim() } })
+      email: formData.email.trim(),
+      customFields: { description: formData.description.trim() }
     })
     submitted.value = true
     formData.customerName = ''
     formData.email = ''
-    formData.confirmEmail = ''
     formData.description = ''
     setTimeout(() => { submitted.value = false }, 3000)
   } catch (err) {
@@ -191,38 +188,27 @@ const handleSubmit = async () => {
 
               <div class="space-y-2">
                 <label for="email" class="text-sm font-semibold leading-none text-slate-700">
-                  Email
+                  Email *
                 </label>
                 <input
                   id="email"
                   v-model="formData.email"
                   type="email"
-                  placeholder="you@example.com (optional)"
-                  class="flex h-12 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-base shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300"
-                >
-              </div>
-
-              <div class="space-y-2">
-                <label for="confirmEmail" class="text-sm font-semibold leading-none text-slate-700">
-                  Confirm Email
-                </label>
-                <input
-                  id="confirmEmail"
-                  v-model="formData.confirmEmail"
-                  type="email"
-                  placeholder="Re-enter your email (optional)"
+                  placeholder="you@example.com"
+                  required
                   class="flex h-12 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-base shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300"
                 >
               </div>
 
               <div class="space-y-2">
                 <label for="description" class="text-sm font-semibold leading-none text-slate-700">
-                  Project Description
+                  Project Description *
                 </label>
                 <textarea
                   id="description"
                   v-model="formData.description"
-                  placeholder="Tell us about your project (optional)..."
+                  placeholder="Tell us about your project and what you need help with..."
+                  required
                   rows="5"
                   class="flex min-h-32 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-3 text-base shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50 hover:border-emerald-300 resize-y"
                 />
