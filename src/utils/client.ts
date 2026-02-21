@@ -1,9 +1,9 @@
-/** Matches backend CreateOrderDto (customerName, email, confirmEmail, customFields). */
+/** Matches backend CreateOrderDto. Only customerName is required. */
 export interface OrderData {
   customerName: string
-  email: string
-  confirmEmail: string
-  customFields: Record<string, unknown>
+  email?: string
+  confirmEmail?: string
+  customFields?: Record<string, unknown>
 }
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'https://dev0pz.com/api'
