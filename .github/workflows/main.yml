@@ -50,7 +50,7 @@ jobs:
           KUBE_DEPLOYMENT_NAME: frontapp
           KUBE_NAMESPACE: default
         run: |
-          kubectl apply -f /home/user/server/project/infra/server/cluster.yaml
+          kubectl apply -f /home/user/code/backapp/cluster.yaml
           DEPLOYMENT_NAME=${KUBE_DEPLOYMENT_NAME:-frontapp}
           NAMESPACE=${KUBE_NAMESPACE:-default}
           
